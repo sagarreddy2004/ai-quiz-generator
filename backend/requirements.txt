@@ -1,0 +1,13 @@
+fastapi>=0.95
+uvicorn[standard]>=0.21
+sqlalchemy>=2.0
+python-dotenv>=1.0
+psycopg2-binary>=2.9
+requests>=2.30
+beautifulsoup4>=4.12
+pydantic>=1.10
+
+# Optional / SDKs for LLM integration - install only if you know which provider you use
+# langchain>=0.1
+# google-generative-ai>=0.3
+# or: openai>=0.27
