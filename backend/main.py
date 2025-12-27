@@ -7,9 +7,9 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import SessionLocal, create_tables, Quiz
-from scraper import scrape_wikipedia
-from llm_quiz_generator import generate_quiz
+from .database import SessionLocal, create_tables, Quiz
+from .scraper import scrape_wikipedia
+from .llm_quiz_generator import generate_quiz
 
 # Ensure tables exist
 create_tables()
@@ -24,17 +24,15 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        # Vite preview frequently uses port 4173 — allow it during local testing
         "http://localhost:4173",
         "http://127.0.0.1:4173",
     ],
-
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ---------- Pydantic schemas for API ---------- #
+# ---------- Pydantic schemas ---------- #
 class QuestionSchema(BaseModel):
     question: str
     options: List[str]
@@ -80,9 +78,8 @@ def generate_quiz_endpoint(req: GenerateRequest, db=Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"LLM generation failed: {e}")
 
-    # 3) prepare data for DB
+    # 3) save to DB
     full_quiz_text = json.dumps(quiz_json, ensure_ascii=False)
-    # store the title returned by scraper (fallback to quiz_json title)
     db_title = title or quiz_json.get("title")
 
     q = Quiz(
@@ -95,9 +92,7 @@ def generate_quiz_endpoint(req: GenerateRequest, db=Depends(get_db)):
     db.commit()
     db.refresh(q)
 
-    # 4) build response
-    # Ensure fields exist in quiz_json
-    response_obj = {
+    return {
         "id": q.id,
         "url": q.url,
         "title": q.title,
@@ -105,26 +100,26 @@ def generate_quiz_endpoint(req: GenerateRequest, db=Depends(get_db)):
         "summary": quiz_json.get("summary"),
         "questions": quiz_json.get("questions", []),
     }
-    return response_obj
 
 @app.get("/history", response_model=List[HistoryItem])
 def history(db=Depends(get_db)):
     rows = db.query(Quiz).order_by(Quiz.date_generated.desc()).all()
-    result = []
-    for r in rows:
-        result.append({
+    return [
+        {
             "id": r.id,
             "url": r.url,
             "title": r.title,
             "date_generated": r.date_generated,
-        })
-    return result
+        }
+        for r in rows
+    ]
 
 @app.get("/quiz/{quiz_id}", response_model=QuizOutputSchema)
 def get_quiz(quiz_id: int, db=Depends(get_db)):
     r = db.query(Quiz).filter(Quiz.id == quiz_id).first()
     if not r:
         raise HTTPException(status_code=404, detail="Quiz not found")
+
     try:
         quiz_data = json.loads(r.full_quiz_data)
     except Exception:
