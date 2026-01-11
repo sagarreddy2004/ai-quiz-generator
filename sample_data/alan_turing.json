@@ -1,0 +1,49 @@
+{
+  "url": "https://en.wikipedia.org/wiki/Alan_Turing",
+  "title": "Alan Turing",
+  "summary": "Alan Turing was a British mathematician and codebreaker whose work laid foundations for computer science and wartime cryptanalysis.",
+  "key_entities": {
+    "people": ["Alan Turing", "Alonzo Church"],
+    "organizations": ["Bletchley Park", "University of Cambridge"],
+    "locations": ["United Kingdom", "Princeton"]
+  },
+  "sections": ["Early life", "Cryptanalysis", "Turing machine", "Legacy"],
+  "related_topics": ["Enigma machine", "Cryptography", "Computer science history"],
+  "quiz": [
+    {
+      "question": "What code did Turing help break at Bletchley Park?",
+      "options": ["Enigma", "Purple", "Lorenz", "Caesar"],
+      "answer": "Enigma",
+      "explanation": "Turing led work on Bombe machines to break Enigma traffic.",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which theoretical model is named after Turing?",
+      "options": ["Lambda calculus", "Von Neumann architecture", "Turing machine", "Finite automaton"],
+      "answer": "Turing machine",
+      "explanation": "He proposed the universal Turing machine to formalize computation.",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Where did Turing study for his PhD?",
+      "options": ["Oxford", "Harvard", "Princeton", "MIT"],
+      "answer": "Princeton",
+      "explanation": "Turing earned his PhD under Alonzo Church at Princeton University.",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What test did Turing propose to evaluate machine intelligence?",
+      "options": ["Captcha", "Turing test", "Bell test", "Alan test"],
+      "answer": "Turing test",
+      "explanation": "The 1950 paper described an imitation game now called the Turing test.",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What chemical treatment was imposed on Turing after his conviction?",
+      "options": ["Incarceration", "Exile", "Chemical castration", "Fines only"],
+      "answer": "Chemical castration",
+      "explanation": "He accepted hormone treatment instead of prison after a 1952 conviction.",
+      "difficulty": "hard"
+    }
+  ]
+}

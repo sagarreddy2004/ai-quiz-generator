@@ -1,0 +1,2 @@
+https://en.wikipedia.org/wiki/Alan_Turing -> alan_turing.json
+https://en.wikipedia.org/wiki/Python_(programming_language) -> python_language.json

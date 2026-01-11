@@ -1,11 +1,23 @@
 # backend/scraper.py
+import re
+from dataclasses import dataclass
+
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
-import re
 
 HEADERS = {
     "User-Agent": "ai-quiz-generator/1.0 (https://example.com) Python requests"
 }
+
+
+@dataclass
+class ScrapeResult:
+    """Structured scrape output used by the backend."""
+
+    title: str
+    text: str
+    sections: list[str]
+    raw_html: str | None = None
 
 def _clean_paragraph(p: Tag) -> str:
     """Return cleaned text from a <p> tag, stripping sup, reference links, and extra whitespace."""
@@ -19,10 +31,12 @@ def _clean_paragraph(p: Tag) -> str:
     text = re.sub(r"\s+", " ", text)
     return text
 
-def scrape_wikipedia(url: str, max_paragraphs: int = None) -> tuple[str, str]:
-    """
-    Scrape a Wikipedia article and return (title, cleaned_text).
-    max_paragraphs: optionally limit number of paragraphs (helpful for very long pages).
+def scrape_wikipedia(url: str, max_paragraphs: int | None = None) -> ScrapeResult:
+    """Scrape a Wikipedia article and return structured text + sections.
+
+    Args:
+        url: Full Wikipedia URL (http/https).
+        max_paragraphs: Optional limit on paragraphs to keep runtime bounded.
     """
     if not url.startswith("http"):
         raise ValueError("Please supply a full URL (including http/https).")
@@ -51,7 +65,7 @@ def scrape_wikipedia(url: str, max_paragraphs: int = None) -> tuple[str, str]:
             node.decompose()
 
     # collect paragraph texts
-    paragraphs = []
+    paragraphs: list[str] = []
     for p in content_div.find_all("p"):
         cleaned = _clean_paragraph(p)
         if cleaned:
@@ -63,17 +77,37 @@ def scrape_wikipedia(url: str, max_paragraphs: int = None) -> tuple[str, str]:
     if not paragraphs:
         texts = [t.get_text(separator=" ", strip=True) for t in content_div.find_all(["div", "span"])]
         joined = " ".join([re.sub(r"\s+", " ", t) for t in texts if t])
-        return title, joined[:10000]  # limit length
+        paragraphs = [joined]
 
     full_text = "\n\n".join(paragraphs)
-    return title, full_text[:20000]  # return at most 20k chars (adjustable)
-    
+
+    # capture headings to surface sections in the API/LLM prompt
+    sections: list[str] = []
+    for header in content_div.find_all(["h2", "h3"]):
+        label = header.get_text(" ", strip=True)
+        label = re.sub(r"\[.*?\]", "", label).strip()  # drop edit markers like [edit]
+        if label and label.lower() not in {"contents", "references", "see also", "external links", "notes", "further reading"}:
+            sections.append(label)
+
+    raw_html = None
+    try:
+        raw_html = str(content_div)[:50000]  # cap to avoid oversized payloads
+    except Exception:
+        raw_html = None
+
+    return ScrapeResult(
+        title=title,
+        text=full_text[:20000],  # return at most 20k chars (adjustable)
+        sections=sections,
+        raw_html=raw_html,
+    )
+
 
 if __name__ == "__main__":
     # quick local test: change this URL if you want a different article
     test_url = "https://en.wikipedia.org/wiki/Python_(programming_language)"
     print("Testing scrape for:", test_url)
-    t, content = scrape_wikipedia(test_url, max_paragraphs=10)
-    print("TITLE:", t)
+    result = scrape_wikipedia(test_url, max_paragraphs=10)
+    print("TITLE:", result.title)
     print("--- SAMPLE ---")
-    print(content[:1000])  # print first 1000 chars
+    print(result.text[:1000])  # print first 1000 chars

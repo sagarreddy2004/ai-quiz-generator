@@ -6,6 +6,7 @@ psycopg2-binary>=2.9
 requests>=2.30
 beautifulsoup4>=4.12
 pydantic>=1.10
+google-genai>=1.0.0
 
 # Optional / SDKs for LLM integration - install only if you know which provider you use
 # langchain>=0.1

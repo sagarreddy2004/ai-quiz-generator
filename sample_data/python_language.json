@@ -1,0 +1,49 @@
+{
+  "url": "https://en.wikipedia.org/wiki/Python_(programming_language)",
+  "title": "Python (programming language)",
+  "summary": "Python is a high-level, interpreted programming language emphasizing readability, batteries-included libraries, and multiple programming paradigms.",
+  "key_entities": {
+    "people": ["Guido van Rossum"],
+    "organizations": ["Python Software Foundation"],
+    "locations": ["Netherlands"]
+  },
+  "sections": ["History", "Design philosophy", "Syntax and semantics", "Libraries", "Implementations"],
+  "related_topics": ["PEP 8", "PyPI", "CPython", "Asyncio"],
+  "quiz": [
+    {
+      "question": "Who created Python?",
+      "options": ["Guido van Rossum", "James Gosling", "Bjarne Stroustrup", "Brendan Eich"],
+      "answer": "Guido van Rossum",
+      "explanation": "He began Python in the late 1980s and released it in 1991.",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which philosophy promotes readability in Python?",
+      "options": ["The C standard", "Zen of Python", "Java Manifesto", "GNU Manifesto"],
+      "answer": "Zen of Python",
+      "explanation": "The Zen of Python outlines design aphorisms like 'Readability counts.'",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the reference implementation of Python?",
+      "options": ["PyPy", "Jython", "CPython", "IronPython"],
+      "answer": "CPython",
+      "explanation": "CPython is the default and most widely used implementation.",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which feature allows Python functions to be paused and resumed?",
+      "options": ["Decorators", "Generators", "Mixins", "Macros"],
+      "answer": "Generators",
+      "explanation": "Generators use 'yield' to produce iterables lazily.",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What packaging index hosts most Python packages?",
+      "options": ["NPM", "Maven Central", "PyPI", "Cargo"],
+      "answer": "PyPI",
+      "explanation": "The Python Package Index (PyPI) distributes Python packages.",
+      "difficulty": "easy"
+    }
+  ]
+}
