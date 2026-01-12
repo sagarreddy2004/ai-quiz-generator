@@ -60,6 +60,13 @@ class QuizItem(BaseModel):
         if options and v not in options:
             raise ValueError("Answer must be one of the options")
         return v
+@app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "service": "AI Wiki Quiz Generator",
+        "docs": "/docs"
+    }
 
 
 class GeneratedQuiz(BaseModel):
